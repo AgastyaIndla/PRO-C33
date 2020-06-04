@@ -1,4 +1,4 @@
-class Bird extends BaseClass {
+class Player extends BaseClass {
     constructor(x,y){
     super(x,y,50,50);
     }
@@ -6,7 +6,8 @@ class Bird extends BaseClass {
     display() {
     super.display();    
     }
-    }
+
+}
     
     
     

@@ -8,6 +8,7 @@ var engine;
 var enemy1
 var enemy2;
 var player ;
+var slingShot;
 
 var gameState = "slingMode";
 var score = 0;
@@ -15,12 +16,14 @@ var score = 0;
 function setup() {
   createCanvas(1200,400);
   engine = Engine.create();
-world = engine.world;
+  world = engine.world;
 
 ground = new Ground(600,height,1200,400);
 platform = new Ground(150,305,300,170);
 
 player = new Player(200,50);
+
+slingShot = new Shooter(this.player,{x:150,y:200});
 
 enemy1 = new Enemy(810,350);
 enemy2 = new Enemy(810,220);
@@ -42,7 +45,47 @@ function draw() {
 
   background(0,100);  
 
-  noStroke();
+  ground.display();
+  platform.display();
+
+  player.display();
+
+  enemy1.display();
+  enemy2.display();
+
+  box1.display();
+  box2.display();
+  box3.display();
+  box4.display();
+  box5.display();
+
+  log1.display();
+  log2.display();
+  log3.display();
+  log4.display();
+  log5.display();
+
+  slingShot.display();
+
   
   drawSprites();
+}
+
+function mouseDragged(){
+  if (gameState !=="launch"){
+      Matter.Body.setPosition(player.body, {x: mouseX , y: mouseY});
+  }
+}
+
+
+function mouseReleased(){
+  slingShot.move();
+  gameState = "launch";
+}
+
+function keyPressed(){
+  if(keyCode === 32 && player.body.speed<1){
+      Matter.Body.setPosition(player.body,{x: 200,y: 50});
+     slingshot.attach(player.body);
+  }
 }
