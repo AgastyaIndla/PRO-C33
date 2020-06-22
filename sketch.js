@@ -1,91 +1,103 @@
 const Engine = Matter.Engine;
-const World  = Matter.World;
+const World= Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
-var world;
-var engine;
-var enemy1
-var enemy2;
-var player ;
-var slingShot;
+var engine, world;
+var box1, enemy1,enemy2;
+var platform,backgroundImg;
+var player, slingshot;
 
-var gameState = "slingMode";
+var gameState = "onSling";
 var score = 0;
+var bg = "bg123.png";
 
-function setup() {
-  createCanvas(1200,400);
-  engine = Engine.create();
-  world = engine.world;
+function setup(){
+    var canvas = createCanvas(1200,400);
+    engine = Engine.create();
+    world = engine.world;
 
-ground = new Ground(600,height,1200,400);
-platform = new Ground(150,305,300,170);
 
-player = new Player(200,50);
+    ground = new Ground(600,height,1200,20);
+    platform = new Ground(150, 305, 300, 170);
 
-slingShot = new Shooter(this.player,{x:150,y:200});
+    player = new Player(200,50);
 
-enemy1 = new Enemy(810,350);
-enemy2 = new Enemy(810,220);
+    box1 = new Box(700,320,70,70);
+    box2 = new Box(920,320,70,70);
+    enemy1 = new Enemy(810, 350);
+    log1 = new Log(810,260,300, PI/2);
 
-box1 = new Box(700,320,70,70);
-box2 = new Box(920,320,70,70);
-box3 = new Box(700,240,70,70);
-box4 = new Box(920,240,70,70)
-box5 = new Box(810,160,70,70);
+    box3 = new Box(700,240,70,70);
+    box4 = new Box(920,240,70,70);
+    enemy2 = new Enemy(810, 220);
 
-log1 = new Log(810,260,300, PI/2);
-log3 = new Log(810,180,300,PI/2);
-log4 = new Log(870,120,150, -PI/7);
-log5 = new Log(870,120,150, -PI/7);
+    log3 =  new Log(810,180,300, PI/2);
 
+    box5 = new Box(810,160,70,70);
+    log4 = new Log(760,120,150, PI/7);
+    log5 = new Log(870,120,150, -PI/7);
+
+   slingshot = new Shooter(player.body,{x:200, y:50});
 }
 
-function draw() {
+function draw(){
+    background(155,200,251);
 
-  background(0,100);  
+        
+    Engine.update(engine);
 
-  ground.display();
-  platform.display();
+    text("x:"+mouseX,50,50); 
+    text("y:"+mouseY,50,80);
 
-  player.display();
+    stroke(30);
+    fill(250,125,5);
+    text("ANGRY FRIENDS GAME",375,50);
+    
+        noStroke();
+        textSize(35)
+        fill("white")
+        text("Score  " + score, width-300, 50)
 
-  enemy1.display();
-  enemy2.display();
+    ground.display();
+    box1.display();
+    box2.display();
+    enemy1.display();
+    enemy1.score();
+    log1.display();
 
-  box1.display();
-  box2.display();
-  box3.display();
-  box4.display();
-  box5.display();
+    box3.display();
+    box4.display();
+    enemy2.display();
+    enemy2.score();
+    log3.display();
 
-  log1.display();
-  log2.display();
-  log3.display();
-  log4.display();
-  log5.display();
+    box5.display();
+    log4.display();
+    log5.display();
 
-  slingShot.display();
+    platform.display();
+    player.display();  
+    slingshot.display();  
 
-  
-  drawSprites();
 }
 
 function mouseDragged(){
-  if (gameState !=="launch"){
-      Matter.Body.setPosition(player.body, {x: mouseX , y: mouseY});
-  }
+    if (gameState !=="launched"){
+        Matter.Body.setPosition(player.body, {x: mouseX , y: mouseY});
+    }
 }
 
 
 function mouseReleased(){
-  slingShot.move();
-  gameState = "launch";
+    slingshot.fly();
+    gameState = "launched";
 }
 
 function keyPressed(){
-  if(keyCode === 32 && player.body.speed<1){
-      Matter.Body.setPosition(player.body,{x: 200,y: 50});
-     slingshot.attach(player.body);
-  }
+    if(keyCode === 32 && player.body.speed<3){
+        player.trajectory=[];
+        Matter.Body.setPosition(player.body,{x: 200,y: 50});
+       slingshot.attach(player.body);
+    }
 }
